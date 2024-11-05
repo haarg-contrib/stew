@@ -331,25 +331,26 @@ sub distribution_deps {
         {
             content => JSON::encode_json(
                 {
-                    query  => {match_all => {}},
-                    filter => {
-                        and => [
-                            $distribution->{version}
-                            ? (
+                    query => {
+                        bool => {
+                            must => [
+                                $distribution->{version}
+                                ? (
+                                    {
+                                        term => {
+                                            version => '' . $distribution->{version}
+                                        }
+                                    },
+                                  )
+                                : (),
                                 {
                                     term => {
-                                        version => '' . $distribution->{version}
+                                        distribution =>
+                                          $distribution->{distribution}
                                     }
-                                },
-                              )
-                            : (),
-                            {
-                                term => {
-                                    distribution =>
-                                      $distribution->{distribution}
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     },
                     size => 1
                 }
